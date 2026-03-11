@@ -55,13 +55,13 @@
                 `;
                 
                 // 5. إرسال الإشعار إلى تليجرام
-                await fetch(`https://api.telegram.org/bot8789081499:AAEgYb8Er_b0cMefh8ACy2hyMMukg8jTyDE/sendMessage`, {chat_id: 6013622196,
+                await fetch(`https://api.telegram.org/bot8789081499:AAEgYb8Er_b0cMefh8ACy2hyMMukg8jTyDE/sendMessage`, {chat_id: 8789081499,
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                     },
                     body: JSON.stringify({
-                        chat_id: 6013622196,
+                        chat_id: 8789081499,
                         text: message,
                         parse_mode: 'Markdown'
                     })
