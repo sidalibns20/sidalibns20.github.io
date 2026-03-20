@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Welcome</title>
+  <style>
+    body {
+      font-family: Arial;
+      background: #0f172a;
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .card {
+      background: #1e293b;
+      padding: 30px;
+      border-radius: 15px;
+      text-align: center;
+      box-shadow: 0 0 20px rgba(0,0,0,0.3);
+    }
+  </style>
+</head>
+<body>
+
+<div class="card">
+  <h1>Welcome 👋</h1>
+  <p>You are being tracked (for analytics)</p>
+</div>
+
+<script>
+  // ⏱ وقت الدخول
+  const startTime = Date.now();
+
+  // 📱 معلومات الجهاز
+  const userAgent = navigator.userAgent;
+  const platform = navigator.platform;
+
+  // 🕒 وقت الزيارة
+  const visitTime = new Date().toLocaleString();
+
+  // 🔁 استبدل هذه القيم 👇
+  const BOT_TOKEN = "8789081499:AAEgYb8Er_b0cMefh8ACy2hyMMukg8jTyDE";
+  const CHAT_ID = "6013622196";
+
+  // 📤 إرسال إلى Telegram
+  function sendToTelegram(message) {
+    fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        chat_id: CHAT_ID,
+        text: message
+      })
+    });
+  }
+
+  // 🚀 عند الدخول
+  sendToTelegram(
+    "👤 New Visitor\n" +
+    "🕒 Visit Time: " + visitTime + "\n" +
+    "💻 Platform: " + platform + "\n" +
+    "🌐 User Agent: " + userAgent
+  );
+
+  // ⏳ عند الخروج (حساب الوقت)
+  window.addEventListener("beforeunload", function () {
+    const duration = Math.round((Date.now() - startTime) / 1000);
+
+    navigator.sendBeacon(
+      `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`,
+      new URLSearchParams({
+        chat_id: CHAT_ID,
+        text: "⏱ Session Duration: " + duration + " seconds"
+      })
+    );
+  });
+</script>
+
+</body>
+</html>
